@@ -1,5 +1,7 @@
 import axios, { AxiosError } from 'axios'
-import { parseCookies, setCookie } from 'nookies'
+import { Router } from 'next/router';
+import { destroyCookie, parseCookies, setCookie } from 'nookies'
+import { signOut } from '../context/AuthContext';
 
 type FailedRequestQueue = {
   onSuccess: (token: string) => void;
@@ -34,7 +36,6 @@ api.interceptors.response.use(response => {
         api.post('/refresh', {
           refreshToken,
         }).then(response => {
-          console.log(`response`, response)
           const { token } = response.data
   
           setCookie(undefined, 'next-auth.token', token, {
@@ -75,7 +76,9 @@ api.interceptors.response.use(response => {
       })
 
     } else {
-      //deslogar usuario
+      //signOut()
     }
   }
+  
+  return Promise.reject(error)
 })
